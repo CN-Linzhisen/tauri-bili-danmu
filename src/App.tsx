@@ -2,12 +2,20 @@ import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 import QRCodeLogin from "@/components/QRCodeLogin";
-import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
-import { getLoginUrl } from "./apis/bilibili";
+import "tailwindcss";
+/**
+ * App组件，作为应用程序的主入口
+ * 使用React和Tauri进行交互
+ */
 function App() {
+  // 使用React的useState钩子管理问候消息和名称状态
   const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
 
+  /**
+   * 异步函数，用于调用Tauri的greet命令
+   * 通过invoke方法与后端Rust代码进行通信
+   */
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
     setGreetMsg(await invoke("greet", { name }));
