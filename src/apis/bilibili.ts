@@ -1,4 +1,4 @@
-import { LOGIN_URL_PREFIX } from "@/utils/constants"
+import { BASE_URL_PREFIX, LOGIN_URL_PREFIX } from "@/utils/constants"
 import { fetch } from "@/utils/fetch"
 /**
  * 获取登录url
@@ -29,7 +29,13 @@ const verifyQrCodeApi = (qrcode_key: string): PromiseData<ILogin> => {
     })
 }
 
+const getUserInfoApi = (): PromiseData<IUser> => {
+    return fetch({
+        url: `${BASE_URL_PREFIX}/x/web-interface/nav`,
+    })
+}
 export {
     getLoginUrlApi,
     verifyQrCodeApi,
+    getUserInfoApi
 }

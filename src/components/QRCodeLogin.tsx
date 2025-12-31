@@ -11,6 +11,7 @@ const QRCodeLogin = () => {
     const [qrCodeImage, setQrCodeImage] = useState<string>("");
     const { userList, setCurrentUser } = useAppStore();
     const getQRCode = async () => {
+        setLoginState(LoginState.未登录);
         try {
             const { data } = await getLoginUrlApi();
             if (!data) {
@@ -18,7 +19,8 @@ const QRCodeLogin = () => {
             }
 
             const { qrcode_key, url } = data;
-
+            console.log("二维码链接: ", url);
+            console.log("二维码key: ", qrcode_key);
             setQrCodeImage(await QRCode.toDataURL(url));
             verifyQrCode(qrcode_key);
         } catch (error) {
@@ -31,7 +33,7 @@ const QRCodeLogin = () => {
 
     const verifyQrCode = async (qrcode_key: string) => {
         const { data } = await verifyQrCodeApi(qrcode_key);
-
+        console.log("二维码状态: ", data);
         if (!data) {
             setTimeout(() => {
                 verifyQrCode(qrcode_key);
@@ -63,12 +65,14 @@ const QRCodeLogin = () => {
     }
 
     const saveLoginInfo = (url: string) => {
-        const { DedeUserId, bili_jct, SESSDATA } = QS.parse(url.split('?')[1]);
+        const { DedeUserID, bili_jct, SESSDATA } = QS.parse(url.split('?')[1]);
+
         const data: IAccess = {
-            uid: +DedeUserId!.toString(),
+            uid: +DedeUserID!.toString(),
             cookie: `SESSDATA=${SESSDATA}`,
             csrf: bili_jct!.toString(),
         }
+        console.log("登录信息: ", data);
         setUserInfo(data);
     }
 
@@ -99,6 +103,7 @@ const QRCodeLogin = () => {
         setCurrentUser(user);
         setQrCodeImage("");
         setLoginState(LoginState.未登录);
+
     }
 
     useEffect(() => {
@@ -106,11 +111,25 @@ const QRCodeLogin = () => {
     }, [])
 
     return (
-        <div>
-            {loginState === LoginState.已扫码} <h5>扫码成功</h5>
-            {loginState === LoginState.已过期} <h5>二维码已过期，请重新获取</h5>
-            {loginState === LoginState.扫码登录成功} <h5>登录成功</h5>
-            {qrCodeImage && <img src={qrCodeImage} alt="二维码" />}
+        <div className="flex flex-col items-center justify-center bg-pink-200 w-40 h-40 mx-auto p-4">
+            {loginState === LoginState.已扫码 && <h5 className="text-green-600 mb-2">扫码成功</h5>}
+            {loginState === LoginState.已过期 && <h5 className="text-red-600 mb-2">二维码已过期，请重新获取
+                <button
+                    type="button"
+                    onClick={() => getQRCode()}
+                    className="ml-2 text-blue-500 underline hover:text-blue-700"
+                >
+                    点击刷新
+                </button>
+            </h5>}
+            {loginState === LoginState.扫码登录成功 && <h5 className="text-blue-600 mb-2">登录成功</h5>}
+            {loginState === LoginState.未登录 && qrCodeImage && (
+                <img
+                    src={qrCodeImage}
+                    alt="二维码"
+                    className="max-w-full max-h-32 object-contain"
+                />
+            )}
         </div>
     )
 }

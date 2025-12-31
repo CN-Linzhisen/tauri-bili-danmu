@@ -3,6 +3,8 @@ import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 import QRCodeLogin from "@/components/QRCodeLogin";
 import "tailwindcss";
+import { getUserInfoApi } from "./apis/bilibili";
+import { useAppStore } from "./stores";
 /**
  * App组件，作为应用程序的主入口
  * 使用React和Tauri进行交互
@@ -20,7 +22,10 @@ function App() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
     setGreetMsg(await invoke("greet", { name }));
   }
-
+  const getUserInfo = async () => {
+    const { data } = await getUserInfoApi();
+    console.log("用户信息: ", data);
+  }
   return (
     <main className="container">
       <h1>Welcome to Tauri + React</h1>
@@ -51,6 +56,7 @@ function App() {
       </form>
       <p>{greetMsg}</p>
       <QRCodeLogin />
+      <button onClick={getUserInfo}>获取用户信息</button>
     </main>
   );
 }

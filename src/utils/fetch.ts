@@ -1,16 +1,20 @@
+import { useAppStore } from '@/stores';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 
 interface RequestOptions {
     url: string;
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-    headers?: Record<string, string>;
+    headers?: Record<string, any>;
     params?: Record<string, any>;
     data?: any;
 }
 
 export const fetch = async <T = any>(options: RequestOptions): Promise<T> => {
+    const { currentUser } = useAppStore.getState();
     const { url, method = 'GET', headers = {}, params, data } = options;
-
+    if (currentUser && currentUser.cookie) {
+        headers.cookie = currentUser.cookie;
+    }
     // 构建 URL 并添加查询参数
     let requestUrl = url;
     if (params) {
