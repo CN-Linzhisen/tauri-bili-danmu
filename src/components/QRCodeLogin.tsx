@@ -6,7 +6,7 @@ import QS from "qs";
 import { useAppStore } from "@/stores";
 
 
-const QRCodeLogin = () => {
+const QRCodeLogin = ({ onSuccess }: { onSuccess?: () => void }) => {
     const [loginState, setLoginState] = useState<LoginState>(LoginState.未登录);
     const [qrCodeImage, setQrCodeImage] = useState<string>("");
     const { userList, setCurrentUser } = useAppStore();
@@ -76,12 +76,11 @@ const QRCodeLogin = () => {
         setUserInfo(data);
     }
 
-    const setUserInfo = (access: IAccess) => {
+    const setUserInfo = async (access: IAccess) => {
         const target = userList.find(user => access.uid === user.mid);
 
         if (target) {
             Object.assign(target, access)
-            // emits("success")
             return
         }
 
@@ -103,7 +102,7 @@ const QRCodeLogin = () => {
         setCurrentUser(user);
         setQrCodeImage("");
         setLoginState(LoginState.未登录);
-
+        onSuccess && onSuccess();
     }
 
     useEffect(() => {
