@@ -5,7 +5,11 @@ fn greet(name: &str) -> String {
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
+use tokio::runtime::Runtime;
+mod ws;
 pub fn run() {
+    let rt = Runtime::new().unwrap();
+    rt.spawn(ws::server());
     tauri::Builder::default()
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())

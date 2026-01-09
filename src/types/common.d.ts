@@ -7,3 +7,9 @@ interface Data<T> {
     message: string;
     data: T;
 }
+
+type SocketType = 'danmu' | 'music' | 'subtitle' | 'background'
+type SocketDanmuCommand = 'sample' | 'clear' | 'config' | 'send'
+type SocketMusicCommand = 'pause' | 'play' | 'pause' | 'stop' | 'demand' | 'update' | 'end' | 'sync'
+type SocketBackgroundCommand = 'change' | 'clear' | 'dynamic' | 'change-dynamic'
+type SocketCommand = SocketDanmuCommand | SocketMusicCommand | SocketBackgroundCommand

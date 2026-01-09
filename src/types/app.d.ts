@@ -26,3 +26,20 @@ interface IAccess {
     cookie?: string
     csrf?: string
 }
+
+interface IRoom {
+    roomid: number
+    uname: string
+}
+
+interface IMsg {
+    uid?: number
+    id: string
+    type: 'entry' | 'message' | 'message-banned' | 'gift' | 'like' | 'follow' | 'emoji' | 'config'
+    isSafe?: boolean
+    uname: string
+    uface?: string
+    message: string
+    medal?: IUserMedal
+    time?: number | string
+}

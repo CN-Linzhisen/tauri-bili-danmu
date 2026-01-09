@@ -11,3 +11,9 @@ export enum QRCodeState {
     未扫码 = 86101,
     已扫码未确认 = 86090
 }
+
+export enum EDMType {
+    普通弹幕 = '0',
+    表情弹幕 = '1',
+    打卡专用 = '2',
+}

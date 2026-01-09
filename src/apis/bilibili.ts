@@ -29,13 +29,28 @@ const verifyQrCodeApi = (qrcode_key: string): PromiseData<ILogin> => {
     })
 }
 
+/**
+ * 获取用户信息
+ * @returns 
+ */
 const getUserInfoApi = (): PromiseData<IUser> => {
     return fetch({
         url: `${BASE_URL_PREFIX}/x/web-interface/nav`,
     })
 }
+
+/**
+ * 
+ * @returns 
+ */
+const getBuvidApi = (): PromiseData<{ b_3: string, b_4: string }> => {
+    return fetch({
+        url: `${BASE_URL_PREFIX}/x/frontend/finger/spi`,
+    })
+}
 export {
     getLoginUrlApi,
     verifyQrCodeApi,
-    getUserInfoApi
+    getUserInfoApi,
+    getBuvidApi,
 }
