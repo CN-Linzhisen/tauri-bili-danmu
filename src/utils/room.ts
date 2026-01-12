@@ -77,7 +77,7 @@ const useRoomState = () => {
             roomid: +data.by_room_ids[`${roomid}`].room_id,
             uname: data.by_room_ids[`${roomid}`].uname,
         }
-        console.log(info);
+        console.log("info ", info);
         setRoom(info.roomid);
         // 
         if (roomList.find(item => item.roomid === info.roomid) == null) {

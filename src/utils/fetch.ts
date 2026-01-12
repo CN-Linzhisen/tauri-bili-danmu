@@ -12,9 +12,11 @@ interface RequestOptions {
 export const fetch = async <T = any>(options: RequestOptions): Promise<T> => {
     const { currentUser } = useAppStore.getState();
     const { url, method = 'GET', headers = {}, params, data } = options;
-    if (currentUser && currentUser.cookie) {
+    if (currentUser && currentUser.cookie && !headers.cookie) {
         headers.cookie = currentUser.cookie;
     }
+    console.log("headers, ", headers)
+    console.log("cookie, ", headers.cookie)
     // 构建 URL 并添加查询参数
     let requestUrl = url;
     if (params) {

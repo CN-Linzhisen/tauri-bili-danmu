@@ -5,6 +5,7 @@ import { getBuvidApi } from "./bilibili"
 import { EDMType } from "@/utils/enums"
 
 const getLiveStatusApi = (room: number) => {
+    console.log('getLiveStatusApi', room)
     return fetch({
         url: `${LIVE_URL_PREFIX}/xlive/web-room/v1/index/getRoomBaseInfo`,
         method: 'GET',
