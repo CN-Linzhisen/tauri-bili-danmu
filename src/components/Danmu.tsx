@@ -1,5 +1,8 @@
+import { sendMessageApi } from "@/apis/live"
 import { LOCAL_WEBSOCKET_URL } from "@/utils/constants"
+import { EDMType } from "@/utils/enums"
 import { useEffect } from "react"
+import { Button } from "./ui/button"
 
 const Danmu = () => {
     let ws: WebSocket
@@ -41,6 +44,10 @@ const Danmu = () => {
         }
     }
 
+    const handleSend = async () => {
+        const res = await sendMessageApi("hello world", EDMType.普通弹幕, 0)
+        console.log(res)
+    }
     useEffect(() => {
         init_listener()
     }, [])
@@ -48,6 +55,7 @@ const Danmu = () => {
     return (
         <div>
             <p>Danmu</p>
+            <Button onClick={handleSend}>发送消息</Button>
         </div>
     )
 }

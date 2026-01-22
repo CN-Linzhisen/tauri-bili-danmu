@@ -13,7 +13,7 @@ let reconnectAttempts = 0
 const MAX_RECONNECT_ATTEMPTS = 5
 
 const useWebsocket = () => {
-    const { currentUser, room } = useAppStore()
+    const { currentUser, room } = useAppStore.getState();
 
     const messageEmits = async (messages: any[]) => {
         if (!messages || !Array.isArray(messages) || !messages.length) return
@@ -30,7 +30,7 @@ const useWebsocket = () => {
         }
 
         try {
-            const { data } = await getLiveTokenApi(currentUser!, room)
+            const { data } = await getLiveTokenApi()
             const authData = {
                 uid: currentUser?.mid,
                 roomid,

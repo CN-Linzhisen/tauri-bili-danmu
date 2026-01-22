@@ -6,7 +6,7 @@ import { emit, listen, once, UnlistenFn } from "@tauri-apps/api/event";
 
 const useRoomState = () => {
     const [connected, setConnected] = useState(false);
-    const { room, setRoom, addRoom, roomList, msgList, addMsg, clearMsg } = useAppStore();
+    const { room, setRoom, addRoom, roomList, msgList, addMsg, clearMsg } = useAppStore.getState();
     const unlisteners: UnlistenFn[] = []
 
     const init_listener = async () => {
@@ -70,7 +70,7 @@ const useRoomState = () => {
         unlisteners.push(danmuListener)
     }
     const startWebsocket = async () => {
-        const { data } = await getLiveStatusApi(room);
+        const { data } = await getLiveStatusApi();
         console.log(data);
         const roomid = Object.keys(data.by_room_ids)[0];
         const info: IRoom = {

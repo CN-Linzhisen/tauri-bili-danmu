@@ -1,5 +1,7 @@
 import { BASE_URL_PREFIX, LOGIN_URL_PREFIX } from "@/utils/constants"
 import { fetch } from "@/utils/fetch"
+import { useAppStore } from '@/stores/index'
+
 /**
  * 获取登录url
  * @returns 
@@ -34,8 +36,14 @@ const verifyQrCodeApi = (qrcode_key: string): PromiseData<ILogin> => {
  * @returns 
  */
 const getUserInfoApi = (): PromiseData<IUser> => {
+    const { currentUser } = useAppStore.getState();
+    console.log('getUserInfoApi');
+    console.log(currentUser?.cookie);
     return fetch({
         url: `${BASE_URL_PREFIX}/x/web-interface/nav`,
+        headers: {
+            cookie: currentUser?.cookie,
+        }
     })
 }
 
@@ -43,9 +51,14 @@ const getUserInfoApi = (): PromiseData<IUser> => {
  * 
  * @returns 
  */
-const getBuvidApi = (): PromiseData<{ b_3: string, b_4: string }> => {
+const getBuvidApi = (): PromiseData<{ b_3: string, b_4: string }> | undefined => {
+    const { currentUser } = useAppStore.getState();
+    if (!currentUser?.cookie || !currentUser?.csrf) return
     return fetch({
         url: `${BASE_URL_PREFIX}/x/frontend/finger/spi`,
+        headers: {
+            cookie: currentUser!.cookie,
+        }
     })
 }
 export {

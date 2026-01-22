@@ -1,4 +1,3 @@
-import { useAppStore } from '@/stores';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 
 interface RequestOptions {
@@ -10,20 +9,27 @@ interface RequestOptions {
 }
 
 export const fetch = async <T = any>(options: RequestOptions): Promise<T> => {
-    const { currentUser } = useAppStore.getState();
     const { url, method = 'GET', headers = {}, params, data } = options;
-    if (currentUser && currentUser.cookie && !headers.cookie) {
-        headers.cookie = currentUser.cookie;
-    }
-    console.log("headers, ", headers)
-    console.log("cookie, ", headers.cookie)
     // 构建 URL 并添加查询参数
     let requestUrl = url;
     if (params) {
         const searchParams = new URLSearchParams(params);
         requestUrl = `${url}${url.includes('?') ? '&' : '?'}${searchParams.toString()}`;
     }
+    console.log(headers);
 
+    let body: any = undefined;
+    if (method != 'GET' && data) {
+        if (headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+            const formData = new URLSearchParams();
+            Object.entries(data).forEach(([key, value]) => {
+                formData.append(key, String(value));
+            });
+            body = formData.toString();
+        } else {
+            body = data;
+        }
+    }
     const response = await tauriFetch(requestUrl, {
         method,
         headers: {
@@ -32,7 +38,7 @@ export const fetch = async <T = any>(options: RequestOptions): Promise<T> => {
             'Origin': 'https://www.bilibili.com',
             ...headers,
         },
-        body: method !== 'GET' && data ? JSON.stringify(data) : undefined,
+        body
     });
 
     if (!response.ok) {

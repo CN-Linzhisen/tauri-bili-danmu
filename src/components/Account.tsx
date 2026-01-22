@@ -15,6 +15,7 @@ const Account = () => {
     }
 
     const handleSuccessLogin = () => {
+        console.log('handleSuccessLogin')
         setQrcodeShow(false)
         refreshCurrentUser()
     }

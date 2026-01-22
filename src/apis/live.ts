@@ -3,8 +3,10 @@ import { fetch } from "@/utils/fetch"
 import { getWbi } from "./wbi"
 import { getBuvidApi } from "./bilibili"
 import { EDMType } from "@/utils/enums"
+import { useAppStore } from '@/stores/index'
 
-const getLiveStatusApi = (room: number) => {
+const getLiveStatusApi = () => {
+    const { room } = useAppStore.getState();
     console.log('getLiveStatusApi', room)
     return fetch({
         url: `${LIVE_URL_PREFIX}/xlive/web-room/v1/index/getRoomBaseInfo`,
@@ -16,7 +18,8 @@ const getLiveStatusApi = (room: number) => {
     })
 }
 
-const getLiveTokenApi = async (currentUser: IUser, room: number) => {
+const getLiveTokenApi = async () => {
+    const { currentUser, room } = useAppStore.getState();
     const params = {
         id: room
     }
@@ -34,9 +37,10 @@ const getLiveTokenApi = async (currentUser: IUser, room: number) => {
     })
 }
 
-const sendMessageApi = (currentUser: IUser, roomid: number, message: string, type: EDMType, replyMid = 0) => {
+const sendMessageApi = (message: string, type: EDMType, replyMid = 0) => {
+    const { currentUser, room } = useAppStore.getState();
     const data = {
-        roomid: roomid,
+        roomid: `${room}`,
         msg: message,
         dm_type: type === EDMType.打卡专用 ? '0' : type,
         bubble: '0',
@@ -50,16 +54,19 @@ const sendMessageApi = (currentUser: IUser, roomid: number, message: string, typ
         csrf: currentUser?.csrf,
         csrf_token: currentUser?.csrf
     }
-
+    console.log('发送弹幕数据:', data);
     return fetch({
         url: `${LIVE_URL_PREFIX}/msg/send`,
         method: 'POST',
         data,
         headers: {
+            'cookie': currentUser?.cookie,
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     })
 }
+
+
 export {
     getLiveStatusApi,
     getLiveTokenApi,
