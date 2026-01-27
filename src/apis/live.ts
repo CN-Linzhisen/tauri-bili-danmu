@@ -20,20 +20,22 @@ const getLiveStatusApi = () => {
 
 const getLiveTokenApi = async () => {
     const { currentUser, room } = useAppStore.getState();
+    console.log('getLiveTokenApi', room)
+    console.log(currentUser?.cookie);
     const params = {
         id: room
     }
     const wbi = await getWbi(params)
 
     const res = await getBuvidApi()
-    if (!res || !res?.data!.b_3) return
-
+    if (!res || !res?.data?.b_3) return
+    console.log("live: ", res.data.b_3, wbi, currentUser?.cookie)
     return fetch({
-        url: `${LIVE_URL_PREFIX}/xlive/web-room/v1/index/getDanmuInfo${wbi}`,
+        url: `${LIVE_URL_PREFIX}/xlive/web-room/v1/index/getDanmuInfo?${wbi}`,
         method: 'GET',
         headers: {
-            cookie: `${currentUser?.cookie};buvid=${res.data.b_3}`
-        }
+            cookie: `${currentUser?.cookie};buvid3=${res.data.b_3}`,
+        },
     })
 }
 

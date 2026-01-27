@@ -5,14 +5,18 @@ import Control from "./components/Control";
 import { useEffect } from "react";
 import useWebsocket from "./hooks/useWebsocket";
 import Danmu from "./components/Danmu";
+import { useAppStore } from "./stores";
 /**
  * App组件，作为应用程序的主入口
  * 使用React和Tauri进行交互
  */
 function App() {
   const { trigger } = useWebsocket();
+  const { refreshCurrentUser } = useAppStore();
   useEffect(() => {
-    trigger
+    console.log(Date.now())
+    trigger()
+    refreshCurrentUser()
   }, []);
   return (
     <main>
@@ -23,8 +27,6 @@ function App() {
       <Danmu />
     </main>
   );
-
-
 }
 
 export default App;

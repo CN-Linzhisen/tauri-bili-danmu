@@ -16,10 +16,11 @@ const useWebsocket = () => {
     const { currentUser, room } = useAppStore.getState();
 
     const messageEmits = async (messages: any[]) => {
+        console.log("messagesEmits: ", messages)
         if (!messages || !Array.isArray(messages) || !messages.length) return
         console.log(messages)
-        // const result = await handleMessage(messages)
-        // if (!result) return
+
+
     }
 
     // 发送连接信息
@@ -31,6 +32,7 @@ const useWebsocket = () => {
 
         try {
             const { data } = await getLiveTokenApi()
+            console.log("livetoken: ", data)
             const authData = {
                 uid: currentUser?.mid,
                 roomid,
@@ -159,6 +161,7 @@ const useWebsocket = () => {
 
     const unListeners: UnlistenFn[] = []
     const trigger = async () => {
+        console.log("useWebsocket trigger called");
         const startListener = await listen<string>(OPEN_WEBSOCKET_EVENT, async (event) => {
             console.log("Received OPEN_WEBSOCKET_EVENT with roomid:", event.payload);
             closeWebsocket()
@@ -169,6 +172,7 @@ const useWebsocket = () => {
         })
         const stopListener = await listen(CLOSE_WEBSOCKET_EVENT, closeWebsocket)
         unListeners.push(startListener, stopListener)
+        console.log("WebSocket listeners registered");
     }
 
     return { trigger }

@@ -80,7 +80,12 @@ const QRCodeLogin = ({ onSuccess }: { onSuccess?: () => void }) => {
         const target = userList.find(user => access.uid === user.mid);
 
         if (target) {
+            console.log("Found existing user:", target);
             Object.assign(target, access)
+            setCurrentUser(target);
+            setQrCodeImage("");
+            setLoginState(LoginState.未登录);
+            onSuccess && onSuccess();
             return
         }
 

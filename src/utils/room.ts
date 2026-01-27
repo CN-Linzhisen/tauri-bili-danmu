@@ -59,6 +59,7 @@ const useRoomState = () => {
 
                 if (message) {
                     addMsg(msg);
+                    console.log("收到弹幕: ", msg);
                 }
 
                 // 排队弹幕
@@ -70,6 +71,7 @@ const useRoomState = () => {
         unlisteners.push(danmuListener)
     }
     const startWebsocket = async () => {
+        console.log("开始连接");
         const { data } = await getLiveStatusApi();
         console.log(data);
         const roomid = Object.keys(data.by_room_ids)[0];
@@ -99,8 +101,6 @@ const useRoomState = () => {
         emit(CLOSE_WEBSOCKET_EVENT)
         unlisteners.forEach(unlistener => unlistener())
         unlisteners.length = 0;
-        // const { stop } = useSpeechStore();
-        // stop();
     }
     return {
         connected,

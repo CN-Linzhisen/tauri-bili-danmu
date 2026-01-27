@@ -83,7 +83,7 @@ const encWbi = async (params: Record<string, any>, key: string) => {
     }).join('&')
 
     const wbi_sign = md5(query + mixin_key)
-    return `${query}&wbi_sign=${wbi_sign}`
+    return `${query}&w_rid=${wbi_sign}`
 }
 
 const getWbi = async (params: Record<string, any>) => {
