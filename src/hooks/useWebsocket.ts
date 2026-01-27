@@ -2,10 +2,11 @@ import { emit, listen } from "@tauri-apps/api/event"
 
 import type { UnlistenFn } from "@tauri-apps/api/event"
 import { WEBSOCKET_URL } from "@/utils/constants"
-import { CLOSE_WEBSOCKET_EVENT, CONNECT_SUCCESS_EVENT, OPEN_WEBSOCKET_EVENT, POPULARITY_EVENT } from "@/utils/events"
+import { BARRAGE_MESSAGE_EVENT, CLOSE_WEBSOCKET_EVENT, CONNECT_SUCCESS_EVENT, OPEN_WEBSOCKET_EVENT, POPULARITY_EVENT } from "@/utils/events"
 import { getLiveTokenApi } from "@/apis/live"
 import { useAppStore } from "@/stores"
 import { decode, encode } from "@/utils/tools"
+import handleMessage from "@/utils/message"
 
 let websocket: WebSocket | null
 let timer = null as any
@@ -16,11 +17,17 @@ const useWebsocket = () => {
     const { currentUser, room } = useAppStore.getState();
 
     const messageEmits = async (messages: any[]) => {
-        console.log("messagesEmits: ", messages)
         if (!messages || !Array.isArray(messages) || !messages.length) return
         console.log(messages)
 
+        const result = await handleMessage(messages)
+        if (!result) return
 
+        const { barrageList } = result
+
+        if (barrageList && barrageList.length) {
+            emit(BARRAGE_MESSAGE_EVENT, barrageList)
+        }
     }
 
     // 发送连接信息
@@ -32,7 +39,6 @@ const useWebsocket = () => {
 
         try {
             const { data } = await getLiveTokenApi()
-            console.log("livetoken: ", data)
             const authData = {
                 uid: currentUser?.mid,
                 roomid,
