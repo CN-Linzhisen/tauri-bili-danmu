@@ -96,84 +96,88 @@ const Danmu = () => {
     }, [msgList])
 
     return (
-        <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-slate-800 dark:text-white">弹幕列表</h2>
-            <div className="flex gap-2">
-                <Input
-                    type="text"
-                    placeholder="输入弹幕内容..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className="flex-1"
-                />
-                <Button onClick={handleSend} className="bg-blue-600 hover:bg-blue-700 text-white">
-                    发送
-                </Button>
-            </div>
-            <div className="border rounded-lg bg-slate-50 dark:bg-slate-900/50 p-4">
-                <div
-                    ref={scrollRef}
-                    className="h-96 overflow-y-auto space-y-3"
-                >
-                    {msgList.length === 0 ? (
-                        <div className="flex items-center justify-center h-full text-slate-400 dark:text-slate-500">
-                            暂无弹幕
-                        </div>
-                    ) : (
-                        msgList.map((danmu, index) => (
-                            <div
-                                key={index}
-                                className="flex items-start gap-3 p-3 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors"
-                            >
-                                <Avatar className="h-10 w-10 shrink-0">
-                                    <AvatarImage referrerPolicy="no-referrer" src={danmu.uface} />
-                                    <AvatarFallback>{danmu.uname[0]}</AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <span className="font-medium text-sm text-slate-700 dark:text-slate-200">
-                                            {danmu.uname}
-                                        </span>
-                                        {danmu.medal && (
-                                            <Badge
-                                                variant="secondary"
-                                                className="text-xs"
-                                                style={{
-                                                    background: `linear-gradient(to right, ${danmu.medal.medal_color_start}, ${danmu.medal.medal_color_end})`,
-                                                    color: 'white'
-                                                }}
-                                            >
-                                                {danmu.medal.medal_name} {danmu.medal.level}
-                                            </Badge>
-                                        )}
-                                        {/* {danmu.isAnchor && (
-                                            <Badge variant="default" className="text-xs bg-blue-600">主播</Badge>
-                                        )}
-                                        {danmu.isManager && (
-                                            <Badge variant="default" className="text-xs bg-green-600">房管</Badge>
-                                        )}
-                                        {danmu.isGuard === 1 && (
-                                            <Badge variant="default" className="text-xs bg-purple-600">总督</Badge>
-                                        )}
-                                        {danmu.isGuard === 2 && (
-                                            <Badge variant="default" className="text-xs bg-blue-500">提督</Badge>
-                                        )}
-                                        {danmu.isGuard === 3 && (
-                                            <Badge variant="default" className="text-xs bg-cyan-500">舰长</Badge>
-                                        )} */}
-                                        <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
-                                            {danmu.time}
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-slate-600 dark:text-slate-300 break-words">
-                                        {danmu.message}
-                                    </p>
-                                </div>
-                            </div>
-                        ))
-                    )}
+        <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">弹幕列表</h2>
+
+                <div className="flex flex-col sm:flex-row gap-2">
+                    <Input
+                        type="text"
+                        placeholder="输入弹幕内容..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className="w-full sm:w-64 rounded-lg px-4 py-3"
+                    />
+                    <Button
+                        onClick={handleSend}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg"
+                    >
+                        发送
+                    </Button>
                 </div>
+            </div>
+
+            <div className="border rounded-xl bg-slate-50 dark:bg-slate-900/50 p-4 shadow-sm">
+                <ScrollArea className="h-125 pr-4">
+                    <div ref={scrollRef} className="space-y-4">
+                        {msgList.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-full py-12">
+                                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center mb-4 dark:bg-slate-700 dark:border-slate-600" />
+                                <p className="text-slate-500 dark:text-slate-400 text-center">
+                                    暂无弹幕<br />
+                                    <span className="text-sm">开始接收直播间弹幕消息</span>
+                                </p>
+                            </div>
+                        ) : (
+                            msgList.map((danmu) => (
+                                <div
+                                    key={danmu.id}
+                                    className="flex gap-3 p-3 rounded-lg bg-white dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors border border-slate-200/50 dark:border-slate-700/50"
+                                >
+                                    <Avatar className="h-10 w-10 shrink-0">
+                                        <AvatarImage
+                                            referrerPolicy="no-referrer"
+                                            src={danmu.uface}
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.src = '/fallback-avatar.png';
+                                            }}
+                                        />
+                                        <AvatarFallback className="bg-slate-100 dark:bg-slate-700">
+                                            {danmu.uname?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                                            <span className="font-medium text-sm text-slate-700 dark:text-slate-200 truncate max-w-30">
+                                                {danmu.uname}
+                                            </span>
+                                            {danmu.medal && (
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="text-xs px-2 py-0.5"
+                                                    style={{
+                                                        background: `linear-gradient(to right, ${danmu.medal.medal_color_start}, ${danmu.medal.medal_color_end})`,
+                                                        color: 'white'
+                                                    }}
+                                                >
+                                                    {danmu.medal.medal_name} {danmu.medal.level}
+                                                </Badge>
+                                            )}
+                                            <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto whitespace-nowrap">
+                                                {danmu.time}
+                                            </span>
+                                        </div>
+                                        <p className={`text-sm wrap-break-word ${danmu.type === 'message-banned' ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-600 dark:text-slate-300'}`}>
+                                            {danmu.message}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </ScrollArea>
             </div>
         </div>
     )

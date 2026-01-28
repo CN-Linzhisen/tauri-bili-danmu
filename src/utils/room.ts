@@ -6,7 +6,7 @@ import { emit, listen, once, UnlistenFn } from "@tauri-apps/api/event";
 
 const useRoomState = () => {
     const [connected, setConnected] = useState(false);
-    const { room, setRoom, addRoom, roomList, msgList, addMsg, clearMsg } = useAppStore.getState();
+    const { setRoom, addRoom, roomList, addMsg, clearMsg } = useAppStore.getState();
     const unlisteners: UnlistenFn[] = []
 
     const init_listener = async () => {

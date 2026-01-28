@@ -14,7 +14,7 @@ let reconnectAttempts = 0
 const MAX_RECONNECT_ATTEMPTS = 5
 
 const useWebsocket = () => {
-    const { currentUser, room } = useAppStore.getState();
+    const { currentUser } = useAppStore.getState();
 
     const messageEmits = async (messages: any[]) => {
         if (!messages || !Array.isArray(messages) || !messages.length) return
