@@ -7,6 +7,7 @@ interface AppStore {
     room: number;
     roomList: IRoom[];
     msgList: IMsg[];
+    currentMedal?: IUserMedal
     setCurrentUser: (user?: IUser) => void;
     setUserList: (users: IUser[]) => void;
     refreshCurrentUser: () => void;
@@ -15,6 +16,8 @@ interface AppStore {
     deleteRoom: (roomid: number) => void;
     addMsg: (msg: IMsg) => void;
     clearMsg: () => void;
+    setMedal: (medal: IUserMedal) => void;
+    unWearMedal: () => void;
 }
 
 const useAppStore = create<AppStore>()(
@@ -55,6 +58,12 @@ const useAppStore = create<AppStore>()(
         })),
         clearMsg: () => set({
             msgList: []
+        }),
+        setMedal: (medal) => set({
+            currentMedal: medal
+        }),
+        unWearMedal: () => set({
+            currentMedal: undefined
         })
     }),
         {

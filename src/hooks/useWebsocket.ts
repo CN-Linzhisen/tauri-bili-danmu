@@ -129,6 +129,7 @@ const useWebsocket = () => {
         }
 
         websocket.onmessage = (msgEvent) => {
+            console.log("useWebsocket Received message");
             // 只有在连接状态下才处理消息
             if (websocket && (websocket.readyState === WebSocket.OPEN)) {
                 onMessage(msgEvent);
