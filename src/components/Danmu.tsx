@@ -4,7 +4,6 @@ import { EDMType } from "@/utils/enums"
 import { useEffect, useState, useRef } from "react"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
-import { ScrollArea } from "./ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Badge } from "./ui/badge"
 import { useAppStore } from "@/stores"
@@ -108,8 +107,8 @@ const Danmu = () => {
             </div>
 
             <div className="flex-1 min-h-0 border rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm shadow-sm overflow-hidden flex flex-col">
-                <ScrollArea className="flex-1 p-4">
-                    <div ref={scrollRef} className="space-y-2 pb-4">
+                <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto no-scrollbar">
+                    <div className="space-y-2 pb-4">
                         {msgList.length === 0 ? (
                             <div className="flex flex-col items-center justify-center h-64 text-slate-400">
                                 <div className="mb-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-full">
@@ -170,7 +169,7 @@ const Danmu = () => {
                             ))
                         )}
                     </div>
-                </ScrollArea>
+                </div>
 
                 <div className="p-3 border-t bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur">
                     <div className="flex gap-2">
