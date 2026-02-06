@@ -96,88 +96,101 @@ const Danmu = () => {
     }, [msgList])
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">弹幕列表</h2>
-
-                <div className="flex flex-col sm:flex-row gap-2">
-                    <Input
-                        type="text"
-                        placeholder="输入弹幕内容..."
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        className="w-full sm:w-64 rounded-lg px-4 py-3"
-                    />
-                    <Button
-                        onClick={handleSend}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg"
-                    >
-                        发送
-                    </Button>
+        <div className="flex flex-col h-full gap-4">
+            <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">实时弹幕</h2>
+                    <Badge variant="outline" className="ml-2 text-xs font-normal text-slate-500">
+                        {msgList.length} 条
+                    </Badge>
                 </div>
             </div>
 
-            <div className="border rounded-xl bg-slate-50 dark:bg-slate-900/50 p-4 shadow-sm">
-                <ScrollArea className="h-125 pr-4">
-                    <div ref={scrollRef} className="space-y-4">
+            <div className="flex-1 min-h-0 border rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm shadow-sm overflow-hidden flex flex-col">
+                <ScrollArea className="flex-1 p-4">
+                    <div ref={scrollRef} className="space-y-2 pb-4">
                         {msgList.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full py-12">
-                                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center mb-4 dark:bg-slate-700 dark:border-slate-600" />
-                                <p className="text-slate-500 dark:text-slate-400 text-center">
-                                    暂无弹幕<br />
-                                    <span className="text-sm">开始接收直播间弹幕消息</span>
-                                </p>
+                            <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+                                <div className="mb-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-full">
+                                    <svg className="w-8 h-8 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                </div>
+                                <p className="text-sm font-medium">等待弹幕连接...</p>
                             </div>
                         ) : (
                             msgList.map((danmu) => (
                                 <div
                                     key={danmu.id}
-                                    className="flex gap-3 p-3 rounded-lg bg-white dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors border border-slate-200/50 dark:border-slate-700/50"
+                                    className="group flex gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
                                 >
-                                    <Avatar className="h-10 w-10 shrink-0">
+                                    <Avatar className="h-9 w-9 shrink-0 ring-2 ring-white dark:ring-slate-800 shadow-sm mt-0.5">
                                         <AvatarImage
                                             referrerPolicy="no-referrer"
-                                            src={danmu.uface}
+                                            src={danmu.uface?.replace('http:', 'https:')}
+                                            className="object-cover"
                                             onError={(e) => {
+                                                console.warn(`Avatar load failed for ${danmu.uname}: ${danmu.uface}`);
                                                 const target = e.target as HTMLImageElement;
-                                                target.src = '/fallback-avatar.png';
+                                                target.src = '/default-avatar.svg';
+                                                target.onerror = null;
                                             }}
                                         />
-                                        <AvatarFallback className="bg-slate-100 dark:bg-slate-700">
-                                            {danmu.uname?.charAt(0).toUpperCase()}
+                                        <AvatarFallback className="bg-slate-100 dark:bg-slate-700 text-slate-500 text-xs">
+                                            {danmu.uname?.slice(0, 1).toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex flex-wrap items-center gap-2 mb-1">
-                                            <span className="font-medium text-sm text-slate-700 dark:text-slate-200 truncate max-w-30">
+                                    <div className="flex-1 min-w-0 space-y-0.5">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className="font-semibold text-sm text-slate-700 dark:text-slate-200 truncate max-w-[120px]">
                                                 {danmu.uname}
                                             </span>
                                             {danmu.medal && (
                                                 <Badge
                                                     variant="secondary"
-                                                    className="text-xs px-2 py-0.5"
+                                                    className="h-4 px-1 text-[10px] font-normal rounded-sm border-0"
                                                     style={{
-                                                        background: `linear-gradient(to right, ${danmu.medal.medal_color_start}, ${danmu.medal.medal_color_end})`,
+                                                        background: `linear-gradient(90deg, ${danmu.medal.medal_color_start}, ${danmu.medal.medal_color_end})`,
                                                         color: 'white'
                                                     }}
                                                 >
                                                     {danmu.medal.medal_name} {danmu.medal.level}
                                                 </Badge>
                                             )}
-                                            <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto whitespace-nowrap">
+                                            <span className="text-[10px] text-slate-300 dark:text-slate-600 ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
                                                 {danmu.time}
                                             </span>
                                         </div>
-                                        <p className={`text-sm wrap-break-word ${danmu.type === 'message-banned' ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-600 dark:text-slate-300'}`}>
+                                        <div className={`text-sm leading-relaxed break-all ${danmu.type === 'message-banned' ? 'line-through text-slate-400 italic' : 'text-slate-600 dark:text-slate-300'}`}>
                                             {danmu.message}
-                                        </p>
+                                        </div>
                                     </div>
                                 </div>
                             ))
                         )}
                     </div>
                 </ScrollArea>
+
+                <div className="p-3 border-t bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur">
+                    <div className="flex gap-2">
+                        <Input
+                            type="text"
+                            placeholder="发送弹幕参与互动..."
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            className="flex-1 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-offset-0"
+                        />
+                        <Button
+                            onClick={handleSend}
+                            className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm shrink-0"
+                            size="default"
+                        >
+                            发送
+                        </Button>
+                    </div>
+                </div>
             </div>
         </div>
     )

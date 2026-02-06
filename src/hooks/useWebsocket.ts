@@ -39,6 +39,7 @@ const useWebsocket = () => {
 
         try {
             const { data } = await getLiveTokenApi()
+            console.log("getLiveTokenApi", data)
             const authData = {
                 uid: currentUser?.mid,
                 roomid,
